@@ -1,1116 +1,484 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark h-full">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PulseLive Studio Pro - NeonStream</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                            700: '#6d28d9',
-                        },
-                        neon: {
-                            pink: '#ec4899',
-                            cyan: '#06b6d4',
-                            green: '#10b981',
-                            yellow: '#f59e0b',
-                            purple: '#a855f7'
-                        },
-                        darkbg: '#06080e',
-                        darkcard: '#0d121f',
-                        darkborder: '#1a2336'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    animation: {
-                        'pulse-glow': 'pulseGlow 2.5s infinite',
-                        'slide-in': 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        pulseGlow: {
-                            '0%, 100%': { boxShadow: '0 0 15px rgba(139, 92, 246, 0.3)' },
-                            '50%': { boxShadow: '0 0 25px rgba(236, 72, 153, 0.5)' },
-                        },
-                        slideIn: {
-                            '0%': { transform: 'translateX(100%)', opacity: '0' },
-                            '100%': { transform: 'translateX(0)', opacity: '1' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(6, 8, 14, 0.8); }
-        ::-webkit-scrollbar-thumb { background: #1a2336; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2e3c54; }
-
-        .glass-panel {
-            background: rgba(13, 18, 31, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-        }
-
-        .bg-grid-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
-            background-size: 28px 28px;
-        }
-
-        #floating-chat-box {
-            touch-action: none;
-            user-select: none;
-            transition: opacity 0.2s ease, transform 0.05s ease-out;
-        }
-        #floating-chat-box.transparent-mode {
-            background: rgba(6, 8, 14, 0.35) !important;
-            backdrop-filter: blur(4px) !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-        }
-        #floating-chat-box.ultra-transparent {
-            background: rgba(6, 8, 14, 0.1) !important;
-            backdrop-filter: blur(2px) !important;
-            border-color: rgba(255, 255, 255, 0.05) !important;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNGRIFF</title>
+<meta name="description" content="UNGRIFF - vêtements">
+<style>
+:root{--bg:#f1e9dc;--fg:#1a1a1a;--card:#faf6ee;--line:#d8ccb8;--acc:#1a1a1a;--accfg:#fff}
+[data-theme=noir]{--bg:#111;--fg:#f2f2f2;--card:#1c1c1c;--line:#333;--acc:#f2f2f2;--accfg:#111}
+[data-theme=blanc]{--bg:#fff;--fg:#111;--card:#f6f6f6;--line:#ddd;--acc:#111;--accfg:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--fg);transition:.2s}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.logo{font-weight:800;letter-spacing:.25em;font-size:20px}
+.btn{background:var(--acc);color:var(--accfg);border:0;border-radius:8px;padding:10px 16px;cursor:pointer;font-weight:600}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.red{background:#c0392b;color:#fff}
+.btn:disabled{opacity:.5}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:4px 0 12px}
+label{font-weight:600;font-size:14px}
+.wrap{max-width:1100px;margin:auto;padding:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative}
+.card .body{padding:14px}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--line)}
+.promo-badge{position:absolute;top:10px;left:10px;background:#c0392b;color:#fff;font-size:12px;font-weight:700;padding:4px 9px;border-radius:99px}
+.dots{display:flex;gap:8px;margin:6px 0}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);cursor:pointer}
+.dot.on{outline:2px solid var(--fg);outline-offset:2px}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:20px}
+#login h1{letter-spacing:.35em;font-size:44px;margin:0}
+#avatar{width:38px;height:38px;border-radius:50%;cursor:pointer;border:2px solid var(--line)}
+#menu{position:absolute;right:16px;top:64px;width:260px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:none;box-shadow:0 8px 30px #0003}
+#menu.open{display:block}
+.themes{display:flex;gap:8px;margin:6px 0 12px}
+.themes button{flex:1}
+.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.tabs .btn{flex:1;min-width:140px}
+.tabs .btn.off{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.cats{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.cats button{background:transparent;border:1px solid var(--line);color:var(--fg);border-radius:99px;padding:6px 14px;cursor:pointer;font-size:13px}
+.cats button.on{background:var(--acc);color:var(--accfg);border-color:var(--acc)}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:14px;z-index:20}
+.modal.open{display:flex}
+.modal>div{background:var(--bg);border-radius:14px;padding:22px;max-width:640px;width:100%;max-height:92vh;overflow:auto}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:600px){.cols{grid-template-columns:1fr}}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:10px}
+.tag{font-size:12px;padding:3px 8px;border-radius:99px;background:var(--line)}
+.thumbs{display:flex;gap:8px}.thumbs img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.msg{padding:10px;border-radius:8px;background:var(--card);border:1px solid var(--line);margin-bottom:12px}
+.msg.warn{border-color:#c0392b}
+[hidden]{display:none!important}
+</style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans h-full overflow-hidden antialiased bg-grid-pattern flex flex-col select-none">
+<body>
 
-    <!-- TOP RIGHT NOTIFICATIONS CONTAINER -->
-    <div id="top-right-notif-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+<!-- CONNEXION -->
+<section id="login" hidden>
+  <h1>UNGRIFF</h1>
+  <p>Connecte-toi avec Google pour entrer sur le site.</p>
+  <button class="btn" id="btnLogin">Se connecter avec Google</button>
+  <small id="loginErr" style="color:#c0392b"></small>
+</section>
 
-    <!-- 1. AUTHENTICATION WALL -->
-    <div id="auth-screen" class="fixed inset-0 bg-darkbg z-50 flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md p-8 rounded-3xl border border-darkborder shadow-2xl space-y-6 relative overflow-hidden">
-            <div class="absolute -top-24 -left-24 w-56 h-56 bg-brand-600/20 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -right-24 w-56 h-56 bg-neon-pink/15 rounded-full blur-3xl"></div>
+<!-- SITE -->
+<div id="app" hidden>
+  <header>
+    <span class="logo">UNGRIFF</span>
+    <div>
+      <img id="avatar" alt="Compte Google" referrerpolicy="no-referrer">
+    </div>
+  </header>
 
-            <div class="text-center space-y-2 relative z-10">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600 to-neon-pink flex items-center justify-center shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-bolt text-white text-2xl"></i>
-                </div>
-                <h1 class="text-2xl font-black tracking-wider text-white">
-                    PULSE<span class="text-neon-pink">LIVE</span> <span class="text-xs font-normal text-gray-400">PRO</span>
-                </h1>
-                <p id="auth-subtitle" class="text-xs text-gray-400">Connexion à votre espace membre & studio</p>
-            </div>
+  <div id="menu">
+    <strong id="uName"></strong><br><small id="uMail"></small>
+    <hr style="border:0;border-top:1px solid var(--line)">
+    <label>Couleur de fond</label>
+    <div class="themes">
+      <button class="btn alt" data-t="beige">Beige</button>
+      <button class="btn alt" data-t="noir">Noir</button>
+      <button class="btn alt" data-t="blanc">Blanc</button>
+    </div>
+    <label>Code promo</label>
+    <input id="promoIn" placeholder="MONCODE" style="text-transform:uppercase;margin-bottom:6px">
+    <button class="btn" id="promoBtn" style="width:100%">Appliquer</button>
+    <small id="promoMsg"></small>
+    <hr style="border:0;border-top:1px solid var(--line)">
+    <button class="btn alt" id="myOrdersBtn" style="width:100%;margin-bottom:8px">Mes commandes</button>
+    <button class="btn alt" id="btnOut" style="width:100%">Se déconnecter</button>
+  </div>
 
-            <!-- Auth Tabs -->
-            <div class="flex bg-darkcard p-1 rounded-2xl border border-darkborder text-xs font-semibold relative z-10">
-                <button onclick="switchAuthTab('login')" id="btn-tab-login" class="flex-1 py-2.5 rounded-xl bg-brand-600 text-white transition-all shadow">Connexion</button>
-                <button onclick="switchAuthTab('register')" id="btn-tab-register" class="flex-1 py-2.5 rounded-xl text-gray-400 hover:text-white transition-all">S'inscrire</button>
-            </div>
-
-            <!-- Auth Form -->
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4 relative z-10">
-                <div id="group-auth-name" class="hidden">
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Nom / Pseudo</label>
-                    <input type="text" id="auth-name" placeholder="Votre pseudonyme" class="w-full bg-darkcard border border-darkborder rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-500 transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Adresse E-mail</label>
-                    <input type="email" id="auth-email" required placeholder="nom@domaine.com" class="w-full bg-darkcard border border-darkborder rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-500 transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Mot de passe</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-darkcard border border-darkborder rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-500 transition-all">
-                </div>
-
-                <div id="auth-error-msg" class="hidden text-red-400 text-xs font-semibold bg-red-500/10 border border-red-500/20 p-3 rounded-xl text-center"></div>
-
-                <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-brand-600 to-neon-pink hover:opacity-90 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-brand-500/20 transition-all">
-                    Se connecter
-                </button>
-            </form>
-        </div>
+  <main class="wrap">
+    <div id="adminBar" hidden>
+      <div class="tabs">
+        <button class="btn" data-tab="shop">Boutique</button>
+        <button class="btn off" data-tab="orders">1. Commandes</button>
+        <button class="btn off" data-tab="clothes">2. Ajouter des vêtements</button>
+        <button class="btn off" data-tab="codes">3. Codes promo</button>
+        <button class="btn off" data-tab="printful">4. Printful</button>
+      </div>
     </div>
 
-    <!-- 2. MAIN APPLICATION -->
-    <div id="app" class="flex h-full w-full overflow-hidden relative">
+    <div id="promoBanner" class="msg" hidden></div>
 
-        <!-- SIDEBAR NAVIGATION -->
-        <aside class="hidden md:flex flex-col w-64 glass-panel border-r border-darkborder z-30 p-4 justify-between shrink-0">
-            <div>
-                <div class="flex items-center gap-3 px-3 py-3 mb-6">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-neon-pink flex items-center justify-center shadow-lg shadow-brand-500/30">
-                        <i class="fa-solid fa-bolt text-white text-lg"></i>
-                    </div>
-                    <span class="text-lg font-black tracking-wider text-white">
-                        PULSE<span class="text-neon-pink">LIVE</span>
-                    </span>
-                </div>
+    <section id="tab-shop">
+      <div class="cats" id="catFilters"></div>
+      <div class="grid" id="products"></div><p id="empty" hidden>Aucun vêtement pour le moment.</p>
+    </section>
 
-                <nav class="space-y-1">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/5">
-                        <i class="fa-solid fa-tower-broadcast text-base w-5 text-neon-pink"></i>
-                        <span class="font-bold text-xs">Studio Streamer</span>
-                    </button>
+    <section id="tab-mine" hidden><h2>Mes commandes</h2><div id="mineList"></div></section>
 
-                    <button onclick="switchTab('watch')" id="nav-watch" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/5">
-                        <i class="fa-solid fa-tv text-base w-5 text-neon-cyan"></i>
-                        <span class="font-bold text-xs">Regarder Stream</span>
-                    </button>
+    <section id="tab-orders" hidden><h2>Commandes à envoyer (Printful)</h2><div id="ordersList"></div></section>
 
-                    <button onclick="switchTab('friends')" id="nav-friends" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/5">
-                        <i class="fa-solid fa-user-group text-base w-5 text-neon-green"></i>
-                        <span class="font-bold text-xs">Amis & Chat</span>
-                        <span id="friends-badge" class="ml-auto hidden bg-neon-pink text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">0</span>
-                    </button>
-                </nav>
-            </div>
+    <section id="tab-clothes" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2>Vêtements</h2><button class="btn" id="addProd" style="font-size:22px;line-height:1">+</button>
+      </div>
+      <div id="adminProducts"></div>
+    </section>
 
-            <!-- LOWER LEFT USER PROFILE CARD -->
-            <div class="pt-4 border-t border-darkborder">
-                <div class="flex items-center gap-3 p-2.5 rounded-2xl bg-darkcard border border-darkborder group relative">
-                    <div class="relative cursor-pointer" title="Changer de photo de profil" onclick="document.getElementById('avatar-upload-input').click()">
-                        <img id="sidebar-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-9 h-9 rounded-full object-cover border-2 border-brand-500">
-                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i class="fa-solid fa-camera text-white text-xs"></i>
-                        </div>
-                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-darkcard"></span>
-                    </div>
-                    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
-                    
-                    <div class="overflow-hidden flex-1">
-                        <div id="sidebar-user-name" class="font-bold text-xs truncate text-white">moha.z 🇩🇿</div>
-                        <div id="sidebar-user-role" class="text-[10px] text-gray-400 truncate">Hôte Streamer</div>
-                    </div>
-                    <button onclick="logout()" class="p-2 text-gray-400 hover:text-red-400 transition-colors" title="Déconnexion">
-                        <i class="fa-solid fa-power-off text-xs"></i>
-                    </button>
-                </div>
-            </div>
-        </aside>
+    <section id="tab-codes" hidden>
+      <h2>Créer un code promo</h2>
+      <div class="cols">
+        <div><label>Nom du code</label><input id="cName" placeholder="ETE20"></div>
+        <div><label>Pourcentage de réduction</label><input id="cPct" type="number" min="1" max="100" placeholder="20"></div>
+        <div><label>Expire le</label><input id="cExp" type="datetime-local"></div>
+      </div>
+      <button class="btn" id="cAdd">Créer le code</button>
+      <small style="display:block;margin-top:8px">Pense à créer le même code (même %) dans Stripe.</small>
+      <h3>Codes existants</h3><div id="codesList"></div>
+    </section>
 
-        <!-- MAIN SCENARIO VIEWPORT -->
-        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <section id="tab-printful" hidden>
+      <h2>Connexion Printful</h2>
+      <div class="msg warn">
+        Ta clé API n'est jamais écrite dans ce fichier HTML (quelqu'un pourrait l'inspecter et la voler).
+        Elle est enregistrée dans Firestore, lisible uniquement par les admins. Pour que l'import automatique
+        fonctionne réellement, il faut en plus déployer la petite fonction serveur fournie à part
+        (voir fichier <code>functions/index.js</code>) — un navigateur seul ne peut pas appeler l'API Printful.
+      </div>
+      <label>Clé API Printful</label>
+      <input id="pfKey" type="password" placeholder="Colle ta clé API Printful ici" autocomplete="off">
+      <button class="btn" id="pfSave">Enregistrer la clé</button>
+      <p id="pfSaveMsg"></p>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+      <h3>Importer les produits publiés sur Printful</h3>
+      <p>Copie ici l'URL de ta fonction une fois déployée (voir instructions), puis clique sur Importer.</p>
+      <label>URL de la fonction d'import</label>
+      <input id="pfFnUrl" placeholder="https://REGION-PROJET.cloudfunctions.net/importPrintful">
+      <button class="btn" id="pfImport">Importer depuis Printful</button>
+      <p id="pfImportMsg"></p>
+    </section>
+  </main>
+</div>
 
-            <!-- HEADER BAR -->
-            <header class="h-16 glass-panel border-b border-darkborder flex items-center justify-between px-4 md:px-6 z-20 shrink-0">
-                <div class="flex items-center gap-3 md:hidden">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-neon-pink flex items-center justify-center">
-                        <i class="fa-solid fa-bolt text-white text-sm"></i>
-                    </div>
-                    <span class="text-base font-black tracking-wider text-white">PULSE<span class="text-neon-pink">LIVE</span></span>
-                </div>
+<!-- MODAL VÊTEMENT (admin) -->
+<div class="modal" id="mProd"><div>
+  <h2>Nouveau vêtement</h2>
+  <label>Nom / titre</label><input id="pName" maxlength="80">
+  <label>Description</label><textarea id="pDesc" rows="3" maxlength="500"></textarea>
+  <label>Catégorie</label>
+  <select id="pCat">
+    <option value="T-shirts">T-shirts</option>
+    <option value="Hoodies">Hoodies / Sweats</option>
+    <option value="Casquettes">Casquettes / Bonnets</option>
+    <option value="Accessoires">Accessoires</option>
+    <option value="Autre">Autre</option>
+  </select>
+  <label>Images (2 maximum)</label>
+  <div class="thumbs" id="pThumbs"></div>
+  <button class="btn alt" id="pImgBtn" type="button">+ Ajouter une image</button>
+  <input type="file" id="pFile" accept="image/*" hidden>
+  <p></p>
+  <label>Couleurs disponibles</label>
+  <div id="pColors" style="display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 12px"></div>
+  <div class="cols">
+    <div><label>Prix (€)</label><input id="pPrice" type="number" min="0" step="0.01"></div>
+    <div><label>Lien de paiement Stripe</label><input id="pLink" placeholder="https://buy.stripe.com/..."></div>
+  </div>
+  <label style="font-weight:400;display:flex;align-items:center;gap:8px">
+    <input type="checkbox" id="pPromoOn" style="width:auto;margin:0">
+    Mettre en promotion
+  </label>
+  <div id="pPromoWrap" hidden>
+    <label>Pourcentage de réduction</label><input id="pPromoPct" type="number" min="1" max="90" placeholder="15">
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn alt" data-close>Annuler</button><button class="btn" id="pSave">Publier</button>
+  </div>
+</div></div>
 
-                <div class="flex items-center gap-3">
-                    <span id="live-indicator-pill" class="bg-gray-800 text-gray-400 border border-darkborder text-[10px] px-3 py-1 rounded-full font-bold flex items-center gap-2">
-                        <span id="live-dot" class="w-2 h-2 rounded-full bg-gray-500"></span> <span id="live-status-text">HORS LIGNE</span>
-                    </span>
-                    <span class="text-xs text-gray-400 hidden sm:inline"><i class="fa-solid fa-eye text-neon-pink mr-1"></i> <span id="viewers-count-global" class="font-bold text-white">1</span> spectateurs</span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <button onclick="switchTab('friends')" class="p-2.5 rounded-xl bg-darkcard border border-darkborder hover:border-brand-500 text-gray-300 text-xs relative">
-                        <i class="fa-solid fa-bell"></i>
-                        <span id="notif-dot" class="absolute top-1 right-1 w-2 h-2 bg-neon-pink rounded-full hidden"></span>
-                    </button>
-                </div>
-            </header>
-
-            <!-- TAB CONTENT VIEWS -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-6 relative pb-20" id="main-content-area">
-
-                <!-- TAB 1: STREAMER DASHBOARD -->
-                <section id="tab-dashboard" class="tab-view space-y-6 max-w-7xl mx-auto">
-                    
-                    <div class="glass-panel p-5 rounded-3xl border border-darkborder flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <span id="badge-host-access" class="bg-brand-500/10 text-brand-400 text-[10px] font-bold px-3 py-1 rounded-full border border-brand-500/20 uppercase tracking-wider">Panneau de Contrôle Live</span>
-                            <h2 class="text-xl font-black text-white mt-2">Studio de Diffusion Streamer</h2>
-                            <p class="text-xs text-gray-400 mt-0.5">Partage d'écran, voix audio et gestion de scène en direct.</p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button onclick="openStreamAudioModal()" id="btn-toggle-live" class="bg-gradient-to-r from-brand-600 to-neon-pink hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-lg shadow-brand-500/20 flex items-center gap-2">
-                                <i class="fa-solid fa-desktop"></i> Lancer le Live (Partage d'écran)
-                            </button>
-                            <button onclick="stopLiveStream()" class="bg-red-500/10 text-red-400 hover:bg-red-600 hover:text-white border border-red-500/20 font-bold px-4 py-2.5 rounded-xl text-xs transition-all">
-                                Arrêter
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Stage & Audio Controls -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                        <!-- Main Screen Share / Stage -->
-                        <div class="lg:col-span-2 space-y-4">
-                            <div class="relative bg-black rounded-3xl overflow-hidden border border-darkborder aspect-video shadow-2xl flex items-center justify-center">
-                                <video id="streamer-video-preview" autoplay playsinline muted class="w-full h-full object-contain"></video>
-                                
-                                <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-darkcard/95">
-                                    <div class="w-14 h-14 rounded-2xl bg-brand-600/10 text-brand-400 flex items-center justify-center text-2xl mb-3 border border-brand-500/20">
-                                        <i class="fa-solid fa-broadcast-tower"></i>
-                                    </div>
-                                    <h3 class="font-bold text-base text-white">Le studio est actuellement en attente</h3>
-                                    <p class="text-xs text-gray-400 max-w-sm mt-1">Cliquez sur "Lancer le Live" pour partager votre écran ou vos fenêtres avec vos spectateurs.</p>
-                                </div>
-
-                                <!-- Stage Co-hosts Container -->
-                                <div id="stage-cohosts-container" class="absolute bottom-4 left-4 flex gap-2 z-20"></div>
-                            </div>
-
-                            <!-- YouTube Integration -->
-                            <div class="glass-panel p-4 rounded-2xl border border-darkborder space-y-3">
-                                <h3 class="font-bold text-xs text-gray-300 uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-brands fa-youtube text-red-500 text-sm"></i> Intégration Flux / Live YouTube
-                                </h3>
-                                <div class="flex gap-2">
-                                    <input type="text" id="youtube-url-input" placeholder="Lien ou ID de vidéo YouTube..." class="flex-1 bg-darkcard border border-darkborder rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
-                                    <button onclick="connectYouTubeStream()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all">
-                                        Lier YouTube
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Voice FX & Guest Controls -->
-                        <div class="space-y-6">
-                            <div class="glass-panel p-5 rounded-3xl border border-darkborder space-y-4">
-                                <div class="flex items-center justify-between pb-3 border-b border-darkborder">
-                                    <h3 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-wand-magic-sparkles text-neon-pink"></i> Effets de Voix Audio
-                                    </h3>
-                                    <span id="fx-status-indicator" class="text-[9px] bg-gray-800 text-gray-400 px-2.5 py-1 rounded-full font-mono font-bold">NORMAL</span>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button onclick="applyAudioFX('pitch_high')" class="bg-darkcard hover:bg-brand-600/20 border border-darkborder p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
-                                        <i class="fa-solid fa-child text-neon-cyan text-base"></i>
-                                        <span class="text-xs font-bold text-white">Voix Aiguë</span>
-                                    </button>
-
-                                    <button onclick="applyAudioFX('pitch_low')" class="bg-darkcard hover:bg-brand-600/20 border border-darkborder p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
-                                        <i class="fa-solid fa-user-ninja text-neon-pink text-base"></i>
-                                        <span class="text-xs font-bold text-white">Voix Grave</span>
-                                    </button>
-
-                                    <button onclick="applyAudioFX('echo')" class="bg-darkcard hover:bg-brand-600/20 border border-darkborder p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
-                                        <i class="fa-solid fa-bullhorn text-neon-yellow text-base"></i>
-                                        <span class="text-xs font-bold text-white">Effet Écho</span>
-                                    </button>
-
-                                    <button onclick="resetAudioFX()" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 p-3 rounded-2xl flex flex-col items-center gap-1 transition-all text-red-400">
-                                        <i class="fa-solid fa-rotate-left text-base"></i>
-                                        <span class="text-xs font-bold">Réinitialiser</span>
-                                    </button>
-                                </div>
-
-                                <button onclick="toggleAudioMonitor()" id="btn-audio-monitor" class="w-full py-2.5 rounded-xl bg-darkcard border border-darkborder text-xs font-bold text-gray-300 flex items-center justify-center gap-2 transition-all">
-                                    <i class="fa-solid fa-headphones text-brand-400"></i>
-                                    <span id="monitor-btn-text">Retour Micro Casque : OFF</span>
-                                </button>
-                            </div>
-
-                            <!-- Stage & Vocal Invites -->
-                            <div class="glass-panel p-5 rounded-3xl border border-darkborder space-y-3">
-                                <h3 class="font-bold text-xs text-white uppercase tracking-wider flex items-center justify-between">
-                                    <span><i class="fa-solid fa-users text-neon-green mr-2"></i>Gestion des Invités</span>
-                                    <span id="stage-count" class="text-[10px] bg-brand-600/20 text-brand-300 px-2 py-0.5 rounded-full font-bold">0 actif</span>
-                                </h3>
-                                <div id="connected-viewers-list" class="space-y-2"></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-                <!-- TAB 2: WATCH LIVE TAB -->
-                <section id="tab-watch" class="tab-view space-y-6 max-w-6xl mx-auto hidden">
-                    <div class="glass-panel p-5 rounded-3xl border border-darkborder space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-10 h-10 rounded-full object-cover border-2 border-brand-500">
-                                <div>
-                                    <h2 class="font-bold text-base text-white">Live Principal PulseLive</h2>
-                                    <p class="text-xs text-gray-400">Streamer: m6739376@gmail.com</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="requestGetOnStage('vocal')" class="bg-darkcard hover:bg-white/10 text-white font-bold px-3 py-2 rounded-xl text-xs transition-all border border-darkborder">
-                                    <i class="fa-solid fa-microphone text-neon-pink mr-1"></i> Inviter Vocal
-                                </button>
-                                <button onclick="requestGetOnStage('video')" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition-all">
-                                    <i class="fa-solid fa-video mr-1"></i> Monter Scène
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="relative bg-black rounded-2xl overflow-hidden border border-darkborder aspect-video flex items-center justify-center">
-                            <iframe id="youtube-embed-frame" class="w-full h-full hidden" frameborder="0" allowfullscreen></iframe>
-                            <video id="viewer-video-stream" autoplay playsinline class="w-full h-full object-contain"></video>
-                            
-                            <div id="viewer-stream-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-darkcard/95">
-                                <i class="fa-solid fa-tv text-3xl text-brand-500 mb-2"></i>
-                                <h3 class="font-bold text-white text-sm">Le live est actuellement hors ligne</h3>
-                                <p class="text-xs text-gray-400 mt-1">Revenez dès que le streamer active son écran.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- TAB 3: FRIENDS & MESSAGING CHAT -->
-                <section id="tab-friends" class="tab-view space-y-6 max-w-5xl mx-auto hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Left: Search & User list -->
-                        <div class="glass-panel p-5 rounded-3xl border border-darkborder space-y-4">
-                            <h2 class="text-sm font-bold text-white">Recherche Utilisateurs</h2>
-                            <div class="relative">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                                <input type="text" id="user-search-input" oninput="handleUserSearch()" placeholder="Rechercher pseudo ou e-mail..." class="w-full bg-darkcard border border-darkborder rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
-                            </div>
-                            <div id="search-results-list" class="space-y-2"></div>
-                        </div>
-
-                        <!-- Right: Private Direct Messaging Chat -->
-                        <div class="md:col-span-2 glass-panel p-5 rounded-3xl border border-darkborder flex flex-col h-[500px]">
-                            <div class="pb-3 border-b border-darkborder flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-brand-600/30 flex items-center justify-center text-brand-400 font-bold text-xs">
-                                        <i class="fa-solid fa-comments"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-bold text-xs text-white" id="dm-recipient-title">Messagerie Privée / Canal Général</h3>
-                                        <span class="text-[10px] text-green-400">En ligne</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="private-messages-container" class="flex-1 overflow-y-auto py-4 space-y-3">
-                                <div class="bg-white/5 p-3 rounded-2xl max-w-xs text-xs text-gray-300">
-                                    Bienvenue dans la messagerie PulseLive ! Sélectionnez un ami ou écrivez votre message ci-dessous.
-                                </div>
-                            </div>
-
-                            <form onsubmit="handleSendPrivateMessage(event)" class="pt-3 border-t border-darkborder flex gap-2">
-                                <input type="text" id="dm-input" placeholder="Écrire un message privé..." class="flex-1 bg-darkcard border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500">
-                                <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-all">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-
-            <!-- LOWER RIGHT VOD BUTTON -->
-            <div class="fixed bottom-5 right-5 z-30">
-                <button onclick="openVODModal()" class="bg-gradient-to-r from-brand-600 to-neon-pink text-white px-5 py-3 rounded-2xl font-bold text-xs shadow-xl flex items-center gap-2 hover:scale-105 transition-all">
-                    <i class="fa-solid fa-folder-plus text-sm"></i> Importer / Gérer des vidéos
-                </button>
-            </div>
-
-            <!-- MOBILE NAVIGATION BAR -->
-            <nav class="md:hidden h-16 glass-panel border-t border-darkborder flex items-center justify-around px-2 fixed bottom-0 left-0 right-0 z-30">
-                <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-brand-500">
-                    <i class="fa-solid fa-tower-broadcast text-base"></i>
-                    <span class="text-[9px] font-bold">Studio</span>
-                </button>
-                <button onclick="switchTab('watch')" class="flex flex-col items-center gap-1 text-gray-400">
-                    <i class="fa-solid fa-tv text-base"></i>
-                    <span class="text-[9px] font-bold">Live</span>
-                </button>
-                <button onclick="switchTab('friends')" class="flex flex-col items-center gap-1 text-gray-400">
-                    <i class="fa-solid fa-user-group text-base"></i>
-                    <span class="text-[9px] font-bold">Amis</span>
-                </button>
-            </nav>
-        </main>
-
-        <!-- 3. FLOATING DRAGGABLE CHAT OVERLAY -->
-        <div id="floating-chat-box" class="fixed top-20 right-6 w-80 h-96 glass-panel rounded-3xl border border-brand-500/30 flex flex-col z-40 shadow-2xl overflow-hidden hidden">
-            <div id="chat-drag-handle" class="p-3 bg-darkcard/90 border-b border-darkborder cursor-move flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-grip-vertical text-gray-500 text-xs"></i>
-                    <span class="font-bold text-xs text-white">Chat en Direct</span>
-                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <button onclick="cycleChatTransparency()" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px]" title="Transparence">
-                        <i class="fa-solid fa-eye-low"></i>
-                    </button>
-                    <button onclick="toggleLiveChatVisibility()" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px]" title="Fermer">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div id="chat-messages-box" class="flex-1 overflow-y-auto p-3 space-y-2 text-xs">
-                <div class="bg-brand-500/10 border border-brand-500/20 p-2.5 rounded-2xl text-brand-300 text-[11px]">
-                    <i class="fa-solid fa-circle-info mr-1"></i> Le live a démarré ! Vous pouvez déplacer et régler la transparence de ce chat.
-                </div>
-            </div>
-
-            <form onsubmit="handleSendFloatingMessage(event)" class="p-2 border-t border-darkborder glass-panel flex gap-2 shrink-0">
-                <input type="text" id="floating-chat-input" placeholder="Envoyer un message..." class="flex-1 bg-darkcard border border-darkborder rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
-                <button type="submit" class="p-2 bg-brand-600 rounded-xl text-white hover:bg-brand-500">
-                    <i class="fa-solid fa-paper-plane text-xs"></i>
-                </button>
-            </form>
-        </div>
-
-        <!-- 4. STREAM AUDIO PERMISSION MODAL -->
-        <div id="stream-audio-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-            <div class="glass-panel w-full max-w-md p-6 rounded-3xl border border-darkborder space-y-5">
-                <div class="text-center space-y-2">
-                    <div class="w-12 h-12 mx-auto rounded-2xl bg-brand-600/20 text-brand-400 flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-sliders"></i>
-                    </div>
-                    <h3 class="font-bold text-base text-white">Autorisations Audio du Live</h3>
-                    <p class="text-xs text-gray-400">Souhaitez-vous partager le son de votre écran et votre microphone avec vos spectateurs ?</p>
-                </div>
-
-                <div class="space-y-3 bg-darkcard p-4 rounded-2xl border border-darkborder text-xs">
-                    <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-white font-medium"><i class="fa-solid fa-desktop text-neon-cyan mr-2"></i>Son du partage d'écran</span>
-                        <input type="checkbox" id="chk-allow-system-audio" checked class="w-4 h-4 accent-brand-600">
-                    </label>
-                    <div class="border-t border-darkborder my-2"></div>
-                    <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-white font-medium"><i class="fa-solid fa-microphone text-neon-pink mr-2"></i>Mon microphone</span>
-                        <input type="checkbox" id="chk-allow-mic-audio" checked class="w-4 h-4 accent-brand-600">
-                    </label>
-                </div>
-
-                <div class="flex gap-3">
-                    <button onclick="closeStreamAudioModal()" class="flex-1 bg-darkcard hover:bg-white/10 text-gray-300 py-2.5 rounded-xl text-xs font-bold transition-all">
-                        Annuler
-                    </button>
-                    <button onclick="confirmAndStartLiveStream()" class="flex-1 bg-gradient-to-r from-brand-600 to-neon-pink text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-lg shadow-brand-500/20">
-                        Lancer le Live
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. VOD MODAL -->
-        <div id="vod-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-            <div class="glass-panel w-full max-w-lg p-6 rounded-3xl border border-darkborder space-y-5">
-                <div class="flex items-center justify-between pb-3 border-b border-darkborder">
-                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
-                        <i class="fa-solid fa-photo-film text-neon-pink"></i> Bibliothèque VOD & Importation
-                    </h3>
-                    <button onclick="closeVODModal()" class="text-gray-400 hover:text-white">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <div id="vod-permission-warning" class="hidden bg-amber-500/10 border border-amber-500/20 p-3 rounded-2xl text-amber-300 text-xs">
-                    <i class="fa-solid fa-lock mr-1"></i> Seul le streamer principal (m6739376@gmail.com) possède l'autorisation d'importer des vidéos.
-                </div>
-
-                <div id="vod-upload-area" class="border-2 border-dashed border-darkborder hover:border-brand-500 p-8 rounded-2xl text-center space-y-3 cursor-pointer transition-all" onclick="document.getElementById('vod-file-input').click()">
-                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-brand-400"></i>
-                    <div>
-                        <h4 class="font-bold text-xs text-white">Glissez une vidéo ou cliquez pour parcourir</h4>
-                        <p class="text-[10px] text-gray-400 mt-0.5">Formats acceptés : MP4, WEBM (Max 500Mo)</p>
-                    </div>
-                    <input type="file" id="vod-file-input" class="hidden" accept="video/*" onchange="handleFileUpload(event)">
-                </div>
-
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Vidéos Importées</h4>
-                    <div id="vod-list-container" class="p-6 bg-darkcard rounded-2xl border border-darkborder text-center text-xs text-gray-400">
-                        <i class="fa-solid fa-film text-2xl text-gray-600 mb-2 block"></i>
-                        Aucune vidéo importée pour le moment.
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<!-- MODAL COMMANDE (client) -->
+<div class="modal" id="mOrder"><div>
+  <h2 id="oTitle"></h2>
+  <p id="oInfo"></p>
+  <label>Couleur</label><div class="dots" id="oColors"></div>
+  <div class="cols">
+    <div>
+      <label>Nom complet</label><input id="fName" autocomplete="name">
+      <label>Adresse ligne 1</label><input id="fA1" autocomplete="address-line1">
+      <label>Adresse ligne 2 (facultatif)</label><input id="fA2" autocomplete="address-line2">
+      <label>Pays</label>
+      <select id="fCountry">
+        <option value="FR">France</option><option value="BE">Belgique</option><option value="CH">Suisse</option>
+        <option value="DE">Allemagne</option><option value="ES">Espagne</option><option value="IT">Italie</option>
+        <option value="GB">Royaume-Uni</option><option value="CA">Canada</option><option value="US">États-Unis</option>
+      </select>
+      <label>Code postal</label><input id="fZip" autocomplete="postal-code">
+      <label>Ville</label><input id="fCity" autocomplete="address-level2">
     </div>
-
-    <script>
-        const STREAMER_EMAIL = "m6739376@gmail.com";
-        const STREAMER_PASS = "dzalgerient!";
-
-        let registeredUsers = JSON.parse(localStorage.getItem('pulselive_users_db')) || [
-            { id: 'usr_streamer', email: STREAMER_EMAIL, password: STREAMER_PASS, name: 'moha.z 🇩🇿', role: 'Hôte Streamer', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-            { id: 'usr_guest1', email: 'guest1@gmail.com', password: '123', name: 'Sami Spectateur', role: 'Membre Spectateur', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' }
-        ];
-
-        let currentUser = JSON.parse(localStorage.getItem('pulselive_active_session')) || null;
-
-        let authMode = 'login';
-        let isLiveActive = false;
-        let screenStream = null;
-        let audioContext = null;
-        let micSourceNode = null;
-        let activeAudioFX = 'none';
-        let isAudioMonitoring = false;
-        let chatTransparencyState = 0;
-        let vodList = [];
-        let activeGuests = [];
-
-        /* ==========================================================================
-           1. AUTHENTICATION & PROFILE MANAGERS
-           ========================================================================== */
-
-        function switchAuthTab(mode) {
-            authMode = mode;
-            const btnLogin = document.getElementById('btn-tab-login');
-            const btnRegister = document.getElementById('btn-tab-register');
-            const nameGroup = document.getElementById('group-auth-name');
-            const submitBtn = document.getElementById('auth-submit-btn');
-
-            if (mode === 'register') {
-                btnLogin.classList.remove('bg-brand-600', 'text-white');
-                btnLogin.classList.add('text-gray-400');
-                btnRegister.classList.add('bg-brand-600', 'text-white');
-                btnRegister.classList.remove('text-gray-400');
-                nameGroup.classList.remove('hidden');
-                submitBtn.textContent = 'Créer mon compte';
-            } else {
-                btnRegister.classList.remove('bg-brand-600', 'text-white');
-                btnRegister.classList.add('text-gray-400');
-                btnLogin.classList.add('bg-brand-600', 'text-white');
-                btnLogin.classList.remove('text-gray-400');
-                nameGroup.classList.add('hidden');
-                submitBtn.textContent = 'Se connecter';
-            }
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value.trim().toLowerCase();
-            const password = document.getElementById('auth-password').value.trim();
-            const name = document.getElementById('auth-name').value.trim() || email.split('@')[0];
-            const errBox = document.getElementById('auth-error-msg');
-
-            errBox.classList.add('hidden');
-            let user = registeredUsers.find(u => u.email.toLowerCase() === email);
-
-            if (authMode === 'register') {
-                if (user) {
-                    errBox.textContent = "Un compte existe déjà avec cet e-mail.";
-                    errBox.classList.remove('hidden');
-                    return;
-                }
-                user = {
-                    id: 'usr_' + Date.now(),
-                    email: email,
-                    password: password,
-                    name: name,
-                    role: email === STREAMER_EMAIL ? 'Hôte Streamer' : 'Membre Spectateur',
-                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=7c3aed&color=fff`
-                };
-                registeredUsers.push(user);
-                localStorage.setItem('pulselive_users_db', JSON.stringify(registeredUsers));
-            } else {
-                if (!user || user.password !== password) {
-                    errBox.textContent = "Identifiants invalides.";
-                    errBox.classList.remove('hidden');
-                    return;
-                }
-            }
-
-            currentUser = user;
-            localStorage.setItem('pulselive_active_session', JSON.stringify(currentUser));
-            checkSessionAndRedirect();
-        }
-
-        function checkSessionAndRedirect() {
-            const authScreen = document.getElementById('auth-screen');
-            if (!currentUser) {
-                authScreen.classList.remove('hidden');
-            } else {
-                authScreen.classList.add('hidden');
-
-                document.getElementById('sidebar-user-name').textContent = currentUser.name;
-                document.getElementById('sidebar-user-role').textContent = currentUser.role;
-                document.getElementById('sidebar-user-avatar').src = currentUser.avatar;
-
-                if (currentUser.email === STREAMER_EMAIL) {
-                    switchTab('dashboard');
-                } else {
-                    switchTab('watch');
-                }
-
-                renderSearchResults();
-                renderGuestsList();
-            }
-        }
-
-        function handleAvatarUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                currentUser.avatar = evt.target.result;
-                document.getElementById('sidebar-user-avatar').src = currentUser.avatar;
-                localStorage.setItem('pulselive_active_session', JSON.stringify(currentUser));
-
-                const uIdx = registeredUsers.findIndex(u => u.id === currentUser.id);
-                if (uIdx !== -1) {
-                    registeredUsers[uIdx].avatar = currentUser.avatar;
-                    localStorage.setItem('pulselive_users_db', JSON.stringify(registeredUsers));
-                }
-
-                showTopRightNotification("Photo de profil", "Avatar mis à jour avec succès !", "success");
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function logout() {
-            localStorage.removeItem('pulselive_active_session');
-            currentUser = null;
-            stopLiveStream();
-            checkSessionAndRedirect();
-        }
-
-        /* ==========================================================================
-           2. STREAMING & AUDIO PERMISSIONS MODAL
-           ========================================================================== */
-
-        function openStreamAudioModal() {
-            if (currentUser.email !== STREAMER_EMAIL) {
-                showTopRightNotification("Accès refusé", "Seul le streamer m6739376@gmail.com peut démarrer un live.", "error");
-                return;
-            }
-            document.getElementById('stream-audio-modal').classList.remove('hidden');
-        }
-
-        function closeStreamAudioModal() {
-            document.getElementById('stream-audio-modal').classList.add('hidden');
-        }
-
-        async function confirmAndStartLiveStream() {
-            closeStreamAudioModal();
-            const allowSys = document.getElementById('chk-allow-system-audio').checked;
-            const allowMic = document.getElementById('chk-allow-mic-audio').checked;
-
-            try {
-                screenStream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: true, 
-                    audio: allowSys 
-                });
-
-                if (allowMic) {
-                    initAudioEngine();
-                }
-
-                document.getElementById('streamer-video-preview').srcObject = screenStream;
-                document.getElementById('viewer-video-stream').srcObject = screenStream;
-
-                document.getElementById('video-placeholder').classList.add('hidden');
-                document.getElementById('viewer-stream-placeholder').classList.add('hidden');
-
-                isLiveActive = true;
-                updateLiveStatusUI();
-
-                document.getElementById('floating-chat-box').classList.remove('hidden');
-
-                screenStream.getVideoTracks()[0].onended = () => stopLiveStream();
-
-                showTopRightNotification("Live Activé", "Partage d'écran et paramètres audio appliqués !", "success");
-
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function stopLiveStream() {
-            if (screenStream) {
-                screenStream.getTracks().forEach(track => track.stop());
-                screenStream = null;
-            }
-            isLiveActive = false;
-            updateLiveStatusUI();
-
-            document.getElementById('streamer-video-preview').srcObject = null;
-            document.getElementById('viewer-video-stream').srcObject = null;
-            document.getElementById('video-placeholder').classList.remove('hidden');
-            document.getElementById('viewer-stream-placeholder').classList.remove('hidden');
-
-            document.getElementById('floating-chat-box').classList.add('hidden');
-        }
-
-        function updateLiveStatusUI() {
-            const pill = document.getElementById('live-indicator-pill');
-            const dot = document.getElementById('live-dot');
-            const text = document.getElementById('live-status-text');
-
-            if (isLiveActive) {
-                pill.className = "bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] px-3 py-1 rounded-full font-bold flex items-center gap-2";
-                dot.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
-                text.textContent = "EN DIRECT";
-            } else {
-                pill.className = "bg-gray-800 text-gray-400 border border-darkborder text-[10px] px-3 py-1 rounded-full font-bold flex items-center gap-2";
-                dot.className = "w-2 h-2 rounded-full bg-gray-500";
-                text.textContent = "HORS LIGNE";
-            }
-        }
-
-        function connectYouTubeStream() {
-            const input = document.getElementById('youtube-url-input').value.trim();
-            if (!input) return;
-
-            let videoId = input;
-            if (input.includes('v=')) videoId = input.split('v=')[1].split('&')[0];
-            else if (input.includes('youtu.be/')) videoId = input.split('youtu.be/')[1].split('?')[0];
-
-            const embedFrame = document.getElementById('youtube-embed-frame');
-            embedFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            embedFrame.classList.remove('hidden');
-            document.getElementById('viewer-stream-placeholder').classList.add('hidden');
-
-            showTopRightNotification("YouTube Lié", "Flux vidéo YouTube en cours de diffusion.", "success");
-        }
-
-        /* ==========================================================================
-           3. VOICE FX & AUDIO ENGINE
-           ========================================================================== */
-
-        async function initAudioEngine() {
-            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioContext.state === 'suspended') await audioContext.resume();
-        }
-
-        async function applyAudioFX(type) {
-            await initAudioEngine();
-
-            try {
-                if (!micSourceNode) {
-                    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    micSourceNode = audioContext.createMediaStreamSource(micStream);
-                }
-
-                activeAudioFX = type;
-                document.getElementById('fx-status-indicator').textContent = type.toUpperCase();
-
-                micSourceNode.disconnect();
-
-                if (type === 'pitch_high') {
-                    const filter = audioContext.createBiquadFilter();
-                    filter.type = 'highpass';
-                    filter.frequency.value = 1200;
-                    micSourceNode.connect(filter);
-                    if (isAudioMonitoring) filter.connect(audioContext.destination);
-                } else if (type === 'pitch_low') {
-                    const filter = audioContext.createBiquadFilter();
-                    filter.type = 'lowpass';
-                    filter.frequency.value = 400;
-                    micSourceNode.connect(filter);
-                    if (isAudioMonitoring) filter.connect(audioContext.destination);
-                } else if (type === 'echo') {
-                    const delay = audioContext.createDelay();
-                    delay.delayTime.value = 0.3;
-                    const feedback = audioContext.createGain();
-                    feedback.gain.value = 0.4;
-
-                    micSourceNode.connect(delay);
-                    delay.connect(feedback);
-                    feedback.connect(delay);
-
-                    if (isAudioMonitoring) delay.connect(audioContext.destination);
-                }
-
-                showTopRightNotification("Audio FX", `Effet appliqué : ${type}`, "info");
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function resetAudioFX() {
-            document.getElementById('fx-status-indicator').textContent = 'NORMAL';
-            if (micSourceNode) micSourceNode.disconnect();
-            showTopRightNotification("Audio FX", "Voix réinitialisée.", "info");
-        }
-
-        function toggleAudioMonitor() {
-            isAudioMonitoring = !isAudioMonitoring;
-            const btnText = document.getElementById('monitor-btn-text');
-            btnText.textContent = isAudioMonitoring ? 'Retour Micro Casque : ON' : 'Retour Micro Casque : OFF';
-        }
-
-        /* ==========================================================================
-           4. GUESTS & VOCAL STAGE
-           ========================================================================== */
-
-        function requestGetOnStage(mode = 'video') {
-            showTopRightNotification("Demande envoyée", `Demande de passage ${mode === 'vocal' ? 'Vocal' : 'Scène Video'} transmise au streamer !`, "info");
-            
-            setTimeout(() => {
-                showTopRightNotification(
-                    "Demande Invité",
-                    `${currentUser.name} souhaite rejoindre le live (${mode.toUpperCase()}).`,
-                    "info",
-                    { userId: currentUser.id, mode: mode }
-                );
-            }, 800);
-        }
-
-        function renderGuestsList() {
-            const container = document.getElementById('connected-viewers-list');
-            if (!container) return;
-
-            const guests = registeredUsers.filter(u => u.id !== 'usr_streamer');
-            container.innerHTML = guests.map(g => `
-                <div class="p-2.5 bg-darkcard rounded-2xl border border-darkborder flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <img src="${g.avatar}" class="w-7 h-7 rounded-full object-cover">
-                        <span class="font-bold text-xs text-white">${g.name}</span>
-                    </div>
-                    <div class="flex gap-1">
-                        <button onclick="toggleGuestStage('${g.id}', 'vocal')" class="bg-neon-pink/20 hover:bg-neon-pink text-neon-pink hover:text-white px-2 py-1 rounded-xl text-[10px] font-bold transition-all">
-                            <i class="fa-solid fa-microphone"></i> Vocal
-                        </button>
-                        <button onclick="toggleGuestStage('${g.id}', 'video')" class="bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white px-2 py-1 rounded-xl text-[10px] font-bold transition-all">
-                            <i class="fa-solid fa-video"></i> Scène
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleGuestStage(guestId, type) {
-            const guest = registeredUsers.find(u => u.id === guestId);
-            if (!guest) return;
-
-            showTopRightNotification("Invité sur Scène", `${guest.name} est maintenant connecté en mode ${type.toUpperCase()} !`, "success");
-        }
-
-        /* ==========================================================================
-           5. NOTIFICATIONS, MESSAGING & FRIENDS
-           ========================================================================== */
-
-        function showTopRightNotification(title, message, type = 'info', actions = null) {
-            const container = document.getElementById('top-right-notif-container');
-            const notif = document.createElement('div');
-
-            notif.className = `glass-panel p-4 rounded-2xl border border-darkborder shadow-2xl pointer-events-auto transition-all animate-slide-in flex flex-col gap-2`;
-
-            notif.innerHTML = `
-                <div class="flex items-start justify-between gap-3">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-bell text-neon-pink text-xs"></i>
-                        <h4 class="font-bold text-xs text-white">${title}</h4>
-                    </div>
-                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 hover:text-white text-xs">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-                <p class="text-xs text-gray-300">${message}</p>
-                ${actions ? `
-                    <div class="flex gap-2 pt-2 border-t border-darkborder">
-                        <button onclick="acceptFriendRequest('${actions.userId}'); this.parentElement.parentElement.remove()" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-bold py-1.5 rounded-xl text-[11px]">
-                            Accepter
-                        </button>
-                        <button onclick="this.parentElement.parentElement.remove()" class="flex-1 bg-darkcard hover:bg-white/10 text-gray-300 font-bold py-1.5 rounded-xl text-[11px]">
-                            Refuser
-                        </button>
-                    </div>
-                ` : ''}
-            `;
-
-            container.appendChild(notif);
-            if (!actions) setTimeout(() => notif.remove(), 4000);
-        }
-
-        function handleUserSearch() {
-            const query = document.getElementById('user-search-input').value.trim().toLowerCase();
-            renderSearchResults(query);
-        }
-
-        function renderSearchResults(query = '') {
-            const container = document.getElementById('search-results-list');
-            if (!container) return;
-
-            const filtered = registeredUsers.filter(u => 
-                u.id !== currentUser.id && 
-                (u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query))
-            );
-
-            container.innerHTML = filtered.map(u => `
-                <div class="p-3 bg-darkcard rounded-2xl border border-darkborder flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover">
-                        <div>
-                            <div class="font-bold text-xs text-white">${u.name}</div>
-                            <div class="text-[10px] text-gray-400">${u.email}</div>
-                        </div>
-                    </div>
-                    <button onclick="sendFriendRequest('${u.id}', '${u.name}')" class="bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all border border-brand-500/30">
-                        <i class="fa-solid fa-user-plus mr-1"></i> Ajouter
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function sendFriendRequest(targetUserId, targetName) {
-            showTopRightNotification(
-                "Demande d'ami envoyée", 
-                `Votre demande d'ami a été envoyée à ${targetName}.`,
-                "success"
-            );
-        }
-
-        function acceptFriendRequest(userId) {
-            showTopRightNotification("Ami ajouté", "Demande d'ami acceptée !", "success");
-        }
-
-        function handleSendPrivateMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('dm-input');
-            const txt = input.value.trim();
-            if (!txt) return;
-
-            const container = document.getElementById('private-messages-container');
-            const msg = document.createElement('div');
-            msg.className = "bg-brand-600 text-white p-3 rounded-2xl max-w-xs text-xs ml-auto shadow-md";
-            msg.textContent = txt;
-            container.appendChild(msg);
-            container.scrollTop = container.scrollHeight;
-            input.value = '';
-        }
-
-        /* ==========================================================================
-           6. FLOATING CHAT & VOD MODAL
-           ========================================================================== */
-
-        function cycleChatTransparency() {
-            const chatBox = document.getElementById('floating-chat-box');
-            chatTransparencyState = (chatTransparencyState + 1) % 3;
-            chatBox.classList.remove('transparent-mode', 'ultra-transparent');
-
-            if (chatTransparencyState === 1) chatBox.classList.add('transparent-mode');
-            else if (chatTransparencyState === 2) chatBox.classList.add('ultra-transparent');
-        }
-
-        function toggleLiveChatVisibility() {
-            document.getElementById('floating-chat-box').classList.toggle('hidden');
-        }
-
-        function handleSendFloatingMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('floating-chat-input');
-            const txt = input.value.trim();
-            if (!txt || !currentUser) return;
-
-            const container = document.getElementById('chat-messages-box');
-            const bubble = document.createElement('div');
-            bubble.className = 'bg-white/5 p-2 rounded-xl border border-white/5';
-            bubble.innerHTML = `<span class="font-bold ${currentUser.email === STREAMER_EMAIL ? 'text-neon-pink' : 'text-brand-400'}">${currentUser.name}:</span> <span class="text-gray-200">${txt}</span>`;
-            
-            container.appendChild(bubble);
-            container.scrollTop = container.scrollHeight;
-            input.value = '';
-        }
-
-        function openVODModal() {
-            document.getElementById('vod-modal').classList.remove('hidden');
-            const isStreamer = currentUser && currentUser.email === STREAMER_EMAIL;
-
-            if (!isStreamer) {
-                document.getElementById('vod-permission-warning').classList.remove('hidden');
-                document.getElementById('vod-upload-area').classList.add('opacity-40', 'pointer-events-none');
-            } else {
-                document.getElementById('vod-permission-warning').classList.add('hidden');
-                document.getElementById('vod-upload-area').classList.remove('opacity-40', 'pointer-events-none');
-            }
-        }
-
-        function closeVODModal() {
-            document.getElementById('vod-modal').classList.add('hidden');
-        }
-
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                vodList.push({ name: file.name, size: (file.size / 1024 / 1024).toFixed(2) });
-                renderVODList();
-                showTopRightNotification("Vidéo importée", `${file.name} ajoutée.`, "success");
-            }
-        }
-
-        function renderVODList() {
-            const container = document.getElementById('vod-list-container');
-            if (vodList.length === 0) {
-                container.innerHTML = `<i class="fa-solid fa-film text-2xl text-gray-600 mb-2 block"></i>Aucune vidéo importée pour le moment.`;
-            } else {
-                container.innerHTML = vodList.map(v => `
-                    <div class="p-2.5 bg-darkbg rounded-xl text-left flex items-center justify-between text-xs">
-                        <span class="font-bold text-white truncate">${v.name}</span>
-                        <span class="text-[10px] text-gray-400">${v.size} Mo</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById(`tab-${tabId}`);
-            if (target) target.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white/10', 'text-white');
-                btn.classList.add('text-gray-400');
-            });
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if (activeNav) {
-                activeNav.classList.add('bg-white/10', 'text-white');
-                activeNav.classList.remove('text-gray-400');
-            }
-        }
-
-        // Draggable Floating Box
-        (function makeChatDraggable() {
-            const chatBox = document.getElementById('floating-chat-box');
-            const dragHandle = document.getElementById('chat-drag-handle');
-            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-
-            dragHandle.addEventListener('mousedown', dragStart);
-            document.addEventListener('mouseup', dragEnd);
-            document.addEventListener('mousemove', drag);
-
-            function dragStart(e) {
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-                if (e.target === dragHandle || dragHandle.contains(e.target)) isDragging = true;
-            }
-
-            function dragEnd() {
-                initialX = currentX;
-                initialY = currentY;
-                isDragging = false;
-            }
-
-            function drag(e) {
-                if (isDragging) {
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-                    xOffset = currentX;
-                    yOffset = currentY;
-                    chatBox.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-                }
-            }
-        })();
-
-        window.onload = function() {
-            checkSessionAndRedirect();
-        };
-    </script>
+    <div>
+      <label>Entreprise (facultatif)</label><input id="fCompany">
+      <label>Téléphone (facultatif)</label><input id="fPhone" type="tel" placeholder="+33 ..." autocomplete="tel">
+      <small>Pour recevoir les mises à jour de livraison.</small>
+      <p><label><input type="checkbox" id="fSave" style="width:auto;margin:0 6px 0 0">Enregistrer cette adresse</label></p>
+    </div>
+  </div>
+  <p id="oErr" style="color:#c0392b"></p>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn alt" data-close>Annuler</button><button class="btn" id="oPay">Payer</button>
+  </div>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ====== CONFIGURATION : remplace par ta config Firebase ====== */
+const firebaseConfig = {
+  apiKey: "REMPLACE_ICI",
+  authDomain: "TON-PROJET.firebaseapp.com",
+  projectId: "TON-PROJET",
+  appId: "REMPLACE_ICI"
+};
+const ADMIN_EMAILS = ["m6739376@gmail.com", "u9501110192@gmail.com"];
+/* Ton IBAN se configure dans Stripe (dashboard.stripe.com), jamais dans ce fichier. */
+/* Ta clé API Printful se colle dans l'onglet "4. Printful" une fois le site en ligne, jamais ici. */
+/* ============================================================ */
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(), db = firebase.firestore();
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const COLORS = {Noir:"#111",Blanc:"#fff",Beige:"#e6d8bd",Gris:"#888",Bleu:"#2f5fb3",Rouge:"#c0392b",Vert:"#3a7d44"};
+const CATS = ["T-shirts","Hoodies","Casquettes","Accessoires","Autre"];
+let user = null, isAdmin = false, products = [], promo = null, current = null, pickedColor = null, pImgs = [], activeCat = "Tous";
+
+/* Thème */
+function setTheme(t){ document.documentElement.dataset.theme = t; try{localStorage.setItem("ung_theme",t)}catch(e){} }
+try{ setTheme(localStorage.getItem("ung_theme") || "beige") }catch(e){ setTheme("beige") }
+
+/* Connexion Google (réelle, via Firebase Auth) */
+$("#btnLogin").onclick = () => {
+  $("#loginErr").textContent = "";
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .catch(e => {
+      if(e.code === "auth/popup-blocked") return auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+      $("#loginErr").textContent = "Connexion impossible : " + e.message;
+    });
+};
+$("#btnOut").onclick = () => auth.signOut();
+
+auth.onAuthStateChanged(u => {
+  user = u;
+  $("#login").hidden = !!u; $("#app").hidden = !u;
+  if(!u) return;
+  isAdmin = !!u.email && u.emailVerified && ADMIN_EMAILS.includes(u.email);
+  $("#avatar").src = u.photoURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E";
+  $("#uName").textContent = u.displayName || ""; $("#uMail").textContent = u.email;
+  $("#adminBar").hidden = !isAdmin;
+  loadProducts();
+  if(isAdmin) { cleanExpired(); loadPrintfulKey(); }
+});
+
+/* Menu profil */
+$("#avatar").onclick = e => { e.stopPropagation(); $("#menu").classList.toggle("open"); };
+document.addEventListener("click", e => { if(!e.target.closest("#menu")) $("#menu").classList.remove("open"); });
+$$("[data-t]").forEach(b => b.onclick = () => setTheme(b.dataset.t));
+
+/* Onglets */
+function showTab(t){
+  ["shop","mine","orders","clothes","codes","printful"].forEach(x => $("#tab-"+x).hidden = x !== t);
+  $$("[data-tab]").forEach(b => b.classList.toggle("off", b.dataset.tab !== t));
+  if(t==="orders") loadOrders(); if(t==="clothes") renderAdminProducts(); if(t==="codes") loadCodes();
+}
+$$("[data-tab]").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$("#myOrdersBtn").onclick = () => { $("#menu").classList.remove("open"); showTab("mine"); loadMine(); };
+
+/* Code promo (client, saisi au clavier) */
+$("#promoBtn").onclick = async () => {
+  const name = $("#promoIn").value.trim().toUpperCase(), m = $("#promoMsg");
+  if(!name) return;
+  const d = await db.collection("codes").doc(name).get();
+  if(!d.exists || d.data().expiresAt.toMillis() < Date.now()){ promo = null; m.textContent = "Code invalide ou expiré."; renderBanner(); return; }
+  promo = { name, pct: d.data().pct }; m.textContent = "Code appliqué : -" + promo.pct + "%"; renderBanner(); renderProducts();
+  $("#menu").classList.remove("open");
+};
+function renderBanner(){ const b=$("#promoBanner"); b.hidden=!promo; if(promo) b.textContent = "Code " + promo.name + " actif : -" + promo.pct + "% sur ta commande."; }
+
+/* Produits */
+async function loadProducts(){
+  const s = await db.collection("products").orderBy("createdAt","desc").get();
+  products = s.docs.map(d => ({id:d.id, ...d.data()}));
+  renderCatFilters(); renderProducts(); if(isAdmin) renderAdminProducts();
+}
+function renderCatFilters(){
+  const used = ["Tous", ...CATS.filter(c => products.some(p => p.category === c))];
+  $("#catFilters").innerHTML = used.map(c => `<button class="${c===activeCat?"on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+  $$("#catFilters [data-cat]").forEach(b => b.onclick = () => { activeCat = b.dataset.cat; renderCatFilters(); renderProducts(); });
+}
+/* prix final : promo produit (fixée par l'admin) prioritaire, sinon code promo client */
+function finalPrice(p){
+  if(p.promoPct) return p.price * (1 - p.promoPct/100);
+  if(promo) return p.price * (1 - promo.pct/100);
+  return p.price;
+}
+const eur = n => n.toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+function renderProducts(){
+  const list = activeCat === "Tous" ? products : products.filter(p => p.category === activeCat);
+  $("#empty").hidden = list.length > 0;
+  $("#products").innerHTML = list.map(p => `
+    <article class="card">
+    ${p.promoPct ? `<span class="promo-badge">-${p.promoPct}%</span>` : ""}
+    <img src="${esc(p.images?.[0])}" alt="${esc(p.name)}">
+    <div class="body"><span class="tag">${esc(p.category||"Autre")}</span>
+    <h3 style="margin:8px 0 4px">${esc(p.name)}</h3>
+    <p style="margin:0 0 8px;font-size:14px">${esc(p.desc)}</p>
+    <div class="dots">${(p.colors||[]).map(c=>`<span class="dot" title="${esc(c)}" style="background:${COLORS[c]||"#ccc"}"></span>`).join("")}</div>
+    <p><strong>${eur(finalPrice(p))}</strong> ${finalPrice(p) < p.price ? `<s style="opacity:.6">${eur(p.price)}</s>` : ""}</p>
+    <button class="btn" style="width:100%" data-buy="${esc(p.id)}">Acheter</button></div></article>`).join("");
+  $$("[data-buy]").forEach(b => b.onclick = () => openOrder(b.dataset.buy));
+}
+
+/* Commande client */
+function openOrder(id){
+  current = products.find(p => p.id === id); if(!current) return;
+  pickedColor = current.colors?.[0] || null;
+  $("#oTitle").textContent = current.name;
+  $("#oInfo").textContent = "Prix : " + eur(finalPrice(current)) + (current.promoPct ? " (promotion -" + current.promoPct + "%)" : promo ? " (code " + promo.name + ")" : "");
+  $("#oColors").innerHTML = (current.colors||[]).map(c=>`<span class="dot ${c===pickedColor?"on":""}" data-c="${esc(c)}" title="${esc(c)}" style="background:${COLORS[c]||"#ccc"}"></span>`).join("");
+  $$("#oColors .dot").forEach(d => d.onclick = () => { pickedColor = d.dataset.c; $$("#oColors .dot").forEach(x=>x.classList.toggle("on",x===d)); });
+  try{ const a = JSON.parse(localStorage.getItem("ung_addr")||"null"); if(a) for(const k in a) $("#"+k).value = a[k]; }catch(e){}
+  if(!$("#fName").value) $("#fName").value = user.displayName || "";
+  $("#oErr").textContent = ""; $("#mOrder").classList.add("open");
+}
+$("#oPay").onclick = async () => {
+  const v = id => $("#"+id).value.trim(), err = $("#oErr");
+  if(!v("fName")) return err.textContent = "Le champ Nom complet est requis.";
+  if(!v("fA1") || !v("fZip") || !v("fCity")) return err.textContent = "Adresse, code postal et ville sont requis.";
+  if(!current.payLink) return err.textContent = "Paiement indisponible pour cet article.";
+  $("#oPay").disabled = true;
+  const fields = ["fName","fA1","fA2","fCountry","fZip","fCity","fCompany","fPhone"];
+  if($("#fSave").checked){ const a={}; fields.forEach(k=>a[k]=$("#"+k).value); try{localStorage.setItem("ung_addr",JSON.stringify(a))}catch(e){} }
+  try{
+    const ref = await db.collection("orders").add({
+      uid: user.uid, email: user.email, productId: current.id, productName: current.name, category: current.category || "Autre",
+      color: pickedColor, total: Math.round(finalPrice(current)*100)/100, code: promo?.name || null, productPromoPct: current.promoPct || null,
+      name: v("fName"), address1: v("fA1"), address2: v("fA2"), country: v("fCountry"),
+      zip: v("fZip"), city: v("fCity"), company: v("fCompany"), phone: v("fPhone"),
+      status: "en attente de paiement", createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    const u = new URL(current.payLink);
+    u.searchParams.set("client_reference_id", ref.id);
+    u.searchParams.set("prefilled_email", user.email);
+    if(promo) u.searchParams.set("prefilled_promo_code", promo.name);
+    location.href = u.toString();
+  }catch(e){ err.textContent = "Erreur : " + e.message; $("#oPay").disabled = false; }
+};
+
+/* Mes commandes */
+async function loadMine(){
+  const s = await db.collection("orders").where("uid","==",user.uid).get();
+  $("#mineList").innerHTML = s.docs.map(d=>d.data()).map(o=>`<div class="row"><div><strong>${esc(o.productName)}</strong> (${esc(o.color)}) - ${eur(o.total)}</div><span class="tag">${esc(o.status)}</span></div>`).join("") || "<p>Aucune commande.</p>";
+}
+
+/* ADMIN : commandes */
+async function loadOrders(){
+  const s = await db.collection("orders").orderBy("createdAt","desc").get();
+  $("#ordersList").innerHTML = s.docs.map(d=>{ const o=d.data(); return `<div class="row"><div>
+    <strong>${esc(o.productName)}</strong> - ${esc(o.color)} - ${eur(o.total)} ${o.code?`(code ${esc(o.code)})`:""}<br>
+    ${esc(o.name)}${o.company?" - "+esc(o.company):""}<br>${esc(o.address1)} ${esc(o.address2)}<br>
+    ${esc(o.zip)} ${esc(o.city)}, ${esc(o.country)}<br>${esc(o.email)} ${o.phone?" - "+esc(o.phone):""}<br>
+    <small>N° ${esc(d.id)}</small></div>
+    <div style="text-align:right"><span class="tag">${esc(o.status)}</span><p>
+    <select data-st="${d.id}"><option>en attente de paiement</option><option>payée</option><option>envoyée à Printful</option><option>expédiée</option></select></p></div></div>`; }).join("") || "<p>Aucune commande.</p>";
+  s.docs.forEach(d => { const el = document.querySelector(`[data-st="${d.id}"]`); if(el){ el.value = d.data().status; el.onchange = () => db.collection("orders").doc(d.id).update({status:el.value}).then(loadOrders); }});
+}
+
+/* ADMIN : vêtements */
+$("#pColors").innerHTML = Object.keys(COLORS).map(c=>`<label style="font-weight:400"><input type="checkbox" value="${c}" style="width:auto;margin:0 4px 0 0">${c}</label>`).join("");
+$("#pPromoOn").onchange = () => $("#pPromoWrap").hidden = !$("#pPromoOn").checked;
+$("#addProd").onclick = () => {
+  pImgs=[]; renderThumbs(); ["pName","pDesc","pPrice","pLink","pPromoPct"].forEach(i=>$("#"+i).value="");
+  $("#pCat").value = "T-shirts"; $("#pPromoOn").checked = false; $("#pPromoWrap").hidden = true;
+  $$("#pColors input").forEach(c=>c.checked=false); $("#mProd").classList.add("open");
+};
+function renderThumbs(){ $("#pThumbs").innerHTML = pImgs.map(s=>`<img src="${s}" alt="">`).join(""); $("#pImgBtn").hidden = pImgs.length >= 2; }
+$("#pImgBtn").onclick = () => $("#pFile").click();
+$("#pFile").onchange = e => {
+  const f = e.target.files[0]; e.target.value = ""; if(!f || pImgs.length >= 2) return;
+  const img = new Image(); img.onload = () => {
+    const r = Math.min(1, 800/img.width), c = document.createElement("canvas");
+    c.width = img.width*r; c.height = img.height*r; c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    pImgs.push(c.toDataURL("image/jpeg",.72)); renderThumbs();
+  }; img.src = URL.createObjectURL(f);
+};
+$("#pSave").onclick = async () => {
+  const name = $("#pName").value.trim(), pr = parseFloat($("#pPrice").value);
+  if(!name || !pImgs.length || !(pr >= 0)) return alert("Nom, prix et au moins une image sont requis.");
+  const link = $("#pLink").value.trim();
+  if(link && !/^https:\/\/(buy|checkout)\.stripe\.com\//.test(link)) return alert("Lien Stripe invalide.");
+  let promoPct = null;
+  if($("#pPromoOn").checked){ promoPct = parseInt($("#pPromoPct").value); if(!(promoPct>=1 && promoPct<=90)) return alert("Pourcentage de promotion invalide (1 à 90)."); }
+  await db.collection("products").add({
+    name, desc: $("#pDesc").value.trim(), category: $("#pCat").value, price: pr, images: pImgs, payLink: link,
+    promoPct, colors: $$("#pColors input:checked").map(c=>c.value), createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  $("#mProd").classList.remove("open"); loadProducts();
+};
+function renderAdminProducts(){
+  $("#adminProducts").innerHTML = products.map(p=>`<div class="row"><div class="thumbs">${(p.images||[]).map(s=>`<img src="${esc(s)}" alt="">`).join("")}</div>
+    <div style="flex:1"><strong>${esc(p.name)}</strong> - ${esc(p.category||"Autre")} - ${eur(p.price)} ${p.promoPct?`<span class="tag">-${p.promoPct}%</span>`:""}<br><small>${esc((p.colors||[]).join(", "))}</small></div>
+    <button class="btn red" data-delp="${esc(p.id)}">Supprimer</button></div>`).join("") || "<p>Aucun vêtement. Clique sur +</p>";
+  $$("[data-delp]").forEach(b => b.onclick = async () => { if(confirm("Supprimer ce vêtement ?")){ await db.collection("products").doc(b.dataset.delp).delete(); loadProducts(); } });
+}
+
+/* ADMIN : codes promo */
+$("#cAdd").onclick = async () => {
+  const name = $("#cName").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""), pct = parseInt($("#cPct").value), exp = $("#cExp").value;
+  if(!name || !(pct>=1 && pct<=100) || !exp) return alert("Nom, pourcentage (1-100) et date d'expiration requis.");
+  await db.collection("codes").doc(name).set({ pct, expiresAt: firebase.firestore.Timestamp.fromDate(new Date(exp)) });
+  ["cName","cPct","cExp"].forEach(i=>$("#"+i).value=""); loadCodes();
+};
+async function loadCodes(){
+  const s = await db.collection("codes").get();
+  $("#codesList").innerHTML = s.docs.map(d=>`<div class="row"><div><strong>${esc(d.id)}</strong> : -${d.data().pct}%<br><small>expire le ${d.data().expiresAt.toDate().toLocaleString("fr-FR")}</small></div><button class="btn red" data-delc="${esc(d.id)}">Supprimer</button></div>`).join("") || "<p>Aucun code.</p>";
+  $$("[data-delc]").forEach(b => b.onclick = async () => { await db.collection("codes").doc(b.dataset.delc).delete(); loadCodes(); });
+}
+async function cleanExpired(){ /* suppression automatique des codes expirés dès que l'admin ouvre le site */
+  const s = await db.collection("codes").where("expiresAt","<",firebase.firestore.Timestamp.now()).get();
+  s.docs.forEach(d => d.ref.delete());
+}
+
+/* ADMIN : Printful — la clé est stockée dans Firestore (settings/printful), jamais dans ce fichier */
+async function loadPrintfulKey(){
+  try{
+    const d = await db.collection("settings").doc("printful").get();
+    if(d.exists && d.data().hasKey) $("#pfKey").placeholder = "Clé déjà enregistrée (laisse vide pour ne pas la changer)";
+    if(d.exists && d.data().fnUrl) $("#pfFnUrl").value = d.data().fnUrl;
+  }catch(e){}
+}
+$("#pfSave").onclick = async () => {
+  const key = $("#pfKey").value.trim(), fnUrl = $("#pfFnUrl").value.trim(), m = $("#pfSaveMsg");
+  if(!key) return m.textContent = "Colle ta clé API avant d'enregistrer.";
+  try{
+    await db.collection("settings").doc("printful").set({ apiKey: key, hasKey: true, fnUrl: fnUrl || null }, {merge:true});
+    $("#pfKey").value = ""; $("#pfKey").placeholder = "Clé enregistrée ✓ (laisse vide pour ne pas la changer)";
+    m.textContent = "Clé enregistrée dans Firestore.";
+  }catch(e){ m.textContent = "Erreur : " + e.message; }
+};
+$("#pfImport").onclick = async () => {
+  const fnUrl = $("#pfFnUrl").value.trim(), m = $("#pfImportMsg");
+  if(!fnUrl) return m.textContent = "Colle d'abord l'URL de la fonction d'import (voir instructions).";
+  m.textContent = "Import en cours...";
+  try{
+    const token = await user.getIdToken();
+    const r = await fetch(fnUrl, { headers: { Authorization: "Bearer " + token } });
+    if(!r.ok) throw new Error("La fonction a répondu avec le statut " + r.status);
+    const data = await r.json();
+    m.textContent = (data.imported ?? 0) + " produit(s) importé(s) depuis Printful.";
+    loadProducts();
+  }catch(e){
+    m.textContent = "Échec : " + e.message + ". Vérifie que la fonction est bien déployée (voir functions/index.js).";
+  }
+};
+
+/* Fermeture des fenêtres */
+$$("[data-close]").forEach(b => b.onclick = () => b.closest(".modal").classList.remove("open"));
+</script>
 </body>
 </html>
