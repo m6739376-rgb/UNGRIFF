@@ -1,0 +1,68 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Helvetica, Arial, sans-serif; background: #fff; color: #111; }
+a { color: inherit; text-decoration: none; }
+input, select, textarea, button { font: inherit; }
+
+.nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 1px solid #111; position: sticky; top: 0; background: #fff; z-index: 10; }
+.logo { font-weight: 900; letter-spacing: .3em; font-size: 20px; }
+.nav-links { display: flex; gap: 24px; font-size: 14px; letter-spacing: .03em; flex-wrap: wrap; }
+.nav-links a:hover { text-decoration: underline; }
+
+.hero { background: #111; color: #fff; padding: 90px 28px; text-align: center; }
+.hero h1 { font-size: 46px; letter-spacing: .25em; margin: 0 0 14px; }
+.hero p { opacity: .8; max-width: 520px; margin: 0 auto; }
+
+.section { max-width: 1200px; margin: 0 auto; padding: 50px 28px; }
+.section h2 { letter-spacing: .1em; font-size: 22px; margin-bottom: 20px; text-transform: uppercase; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 24px; }
+.product-card { display: block; border: 1px solid #eee; position: relative; }
+.product-card:hover { border-color: #111; }
+.product-img { width: 100%; aspect-ratio: 3/4; background-color: #f2f2f2; background-size: cover; background-position: center; }
+.product-info { padding: 14px; }
+.product-cat { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #888; margin: 0 0 4px; }
+.product-info h3 { margin: 0 0 6px; font-size: 15px; }
+.product-price s { color: #999; margin-left: 8px; font-weight: 400; }
+.badge { position: absolute; top: 10px; left: 10px; background: #111; color: #fff; font-size: 11px; padding: 4px 10px; font-weight: 700; letter-spacing: .05em; z-index: 1; }
+
+.btn { background: #111; color: #fff; border: 1px solid #111; padding: 13px 22px; cursor: pointer; letter-spacing: .05em; font-size: 14px; }
+.btn:hover { background: #333; }
+.btn.outline { background: #fff; color: #111; }
+.btn.outline:hover { background: #f3f3f3; }
+.btn.danger { background: #b00020; border-color: #b00020; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.field { display: block; margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.field input, .field select, .field textarea { width: 100%; padding: 11px; border: 1px solid #ccc; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+@media (max-width: 640px) { .cols2 { grid-template-columns: 1fr; } .hero h1 { font-size: 30px; } }
+
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 16px; }
+.swatch { padding: 8px 14px; border: 1px solid #ccc; cursor: pointer; font-size: 13px; }
+.swatch.on { border-color: #111; background: #111; color: #fff; }
+.swatch.disabled { opacity: .35; text-decoration: line-through; cursor: not-allowed; }
+
+.cart-row { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid #eee; }
+.cart-row img { width: 70px; height: 90px; object-fit: cover; background: #f2f2f2; }
+.cart-row .grow { flex: 1; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th, .table td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+.tag { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #eee; }
+.tag.paye { background: #d7f3dc; } .tag.non_paye { background: #f3d7d7; }
+
+.admin-tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+.admin-tabs a { padding: 10px 16px; border: 1px solid #111; font-size: 13px; }
+.admin-tabs a.active { background: #111; color: #fff; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 16px; margin-bottom: 30px; }
+.stat-card { border: 1px solid #111; padding: 18px; }
+.stat-card .n { font-size: 28px; font-weight: 800; }
+.stat-card .l { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #666; }
+
+.msg { padding: 12px; border: 1px solid #111; margin-bottom: 16px; font-size: 14px; }
+.msg.error { border-color: #b00020; color: #b00020; }
+.msg.ok { border-color: #0a7a2f; color: #0a7a2f; }
+
+.footer { border-top: 1px solid #111; padding: 30px 28px; text-align: center; font-size: 13px; color: #666; }
