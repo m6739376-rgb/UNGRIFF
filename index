@@ -1,0 +1,88 @@
+/**
+ * Fonction serveur : importe les produits publiés sur Printful vers Firestore.
+ * Elle existe parce qu'un navigateur ne peut pas appeler l'API Printful directement
+ * (pas de CORS côté Printful, et la clé API ne doit jamais être visible dans le HTML).
+ *
+ * Déploiement :
+ *   1. npm install -g firebase-tools
+ *   2. firebase init functions   (dans le dossier de ton projet, choisis "Use an existing project")
+ *   3. Copie ce fichier dans functions/index.js (remplace le fichier généré)
+ *   4. Dans functions/, lance : npm install firebase-admin firebase-functions node-fetch@2
+ *   5. firebase deploy --only functions
+ *   6. Copie l'URL affichée (https://REGION-PROJET.cloudfunctions.net/importPrintful)
+ *      dans l'onglet "4. Printful" du site, champ "URL de la fonction d'import".
+ *
+ * La liste des admins doit être identique à celle du fichier index.html (ADMIN_EMAILS).
+ */
+
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const fetch = require("node-fetch");
+
+admin.initializeApp();
+const db = admin.firestore();
+
+const ADMIN_EMAILS = ["m6739376@gmail.com", "u9501110192@gmail.com"];
+
+exports.importPrintful = functions.https.onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  if (req.method === "OPTIONS") { res.set("Access-Control-Allow-Headers", "Authorization"); return res.status(204).send(""); }
+
+  try {
+    // 1. Vérifie que la personne qui appelle est bien connectée ET admin
+    const authHeader = req.headers.authorization || "";
+    const idToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+    if (!idToken) return res.status(401).json({ error: "Non authentifié." });
+
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    if (!decoded.email || !decoded.email_verified || !ADMIN_EMAILS.includes(decoded.email)) {
+      return res.status(403).json({ error: "Accès refusé : réservé aux admins." });
+    }
+
+    // 2. Récupère la clé API Printful stockée dans Firestore
+    const settingsDoc = await db.collection("settings").doc("printful").get();
+    const apiKey = settingsDoc.exists ? settingsDoc.data().apiKey : null;
+    if (!apiKey) return res.status(400).json({ error: "Aucune clé API Printful enregistrée." });
+
+    // 3. Appelle l'API Printful (liste des produits de la boutique)
+    const pfRes = await fetch("https://api.printful.com/store/products", {
+      headers: { Authorization: "Bearer " + apiKey }
+    });
+    if (!pfRes.ok) {
+      const txt = await pfRes.text();
+      return res.status(502).json({ error: "Printful a répondu une erreur : " + txt });
+    }
+    const pfData = await pfRes.json();
+    const items = pfData.result || [];
+
+    // 4. Pour chaque produit Printful, récupère le détail (prix, image, variantes) et l'enregistre
+    let imported = 0;
+    for (const item of items) {
+      const detailRes = await fetch(`https://api.printful.com/store/products/${item.id}`, {
+        headers: { Authorization: "Bearer " + apiKey }
+      });
+      if (!detailRes.ok) continue;
+      const detail = (await detailRes.json()).result;
+      const variant = detail.sync_variants?.[0];
+      if (!variant) continue;
+
+      await db.collection("products").doc("pf_" + item.id).set({
+        name: detail.sync_product.name,
+        desc: "Produit importé depuis Printful.",
+        category: "Autre",
+        price: parseFloat(variant.retail_price || "0"),
+        images: [detail.sync_product.thumbnail_url].filter(Boolean),
+        colors: [],
+        promoPct: null,
+        payLink: "",
+        printfulId: item.id,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      imported++;
+    }
+
+    return res.json({ imported });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
